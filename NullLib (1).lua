@@ -388,7 +388,7 @@ function NullLib:CreateWindow(cfg)
         tab.Select=activate
 
         -- ════════════════════════════════════════════
-        -- GROUP (Karpiware-style card with 2-col grid)
+        -- GROUP (Karpiware-style card with 2-col rows)
         -- ════════════════════════════════════════════
         function tab:CreateGroup(cfg2)
             cfg2 = cfg2 or {}
@@ -419,55 +419,60 @@ function NullLib:CreateWindow(cfg)
             stroke(card,C.Border,1)
             pad(card,6,6,6,6)
 
-            -- Grid container
-            local grid=ni("Frame",{
+            -- Rows container: vertical list of rows
+            local rowsFrame=ni("Frame",{
                 Size=UDim2.new(1,0,0,0),AutomaticSize=Enum.AutomaticSize.Y,
                 BackgroundTransparency=1,
             },card)
+            list(rowsFrame,5)
 
-            local gridLayout=ni("UIGridLayout",{
-                CellSize=UDim2.new(0.5,-4,0,34),
-                CellPadding=UDim2.new(0,6,0,5),
-                SortOrder=Enum.SortOrder.LayoutOrder,
-                FillDirection=Enum.FillDirection.Horizontal,
-                HorizontalAlignment=Enum.HorizontalAlignment.Left,
-                VerticalAlignment=Enum.VerticalAlignment.Top,
-            },grid)
+            -- ROW MANAGEMENT
+            -- Half-width elements share a horizontal pair row (up to 2 per row).
+            -- Full-width elements always get their own dedicated row.
+            local currentPairRow  = nil
+            local currentPairCount = 0
+            local CELL_H = 34
+            local GAP    = 5
 
-            local elemCount=0
+            local function closePairRow()
+                currentPairRow  = nil
+                currentPairCount = 0
+            end
 
-            -- For full-width cells we need to force a new row
             local function makeHalfCell()
-                elemCount=elemCount+1
-                local c=ni("Frame",{BackgroundTransparency=1,LayoutOrder=elemCount},grid)
-                return c
-            end
-
-            local function makeFullCell(customH)
-                -- pad to even so this starts on a new row
-                if elemCount%2~=0 then
-                    ni("Frame",{BackgroundTransparency=1,LayoutOrder=elemCount+1},grid)
-                    elemCount=elemCount+1
+                if currentPairRow == nil or currentPairCount >= 2 then
+                    currentPairRow = ni("Frame",{
+                        Size=UDim2.new(1,0,0,CELL_H),
+                        BackgroundTransparency=1,
+                    },rowsFrame)
+                    ni("UIListLayout",{
+                        Padding=UDim.new(0,GAP),
+                        FillDirection=Enum.FillDirection.Horizontal,
+                        SortOrder=Enum.SortOrder.LayoutOrder,
+                    },currentPairRow)
+                    currentPairCount = 0
                 end
-                elemCount=elemCount+1
-                -- override cell size inline via a frame with UIGridLayout size exception
-                local c=ni("Frame",{
-                    Size=UDim2.new(1,0,0,customH or 34),
-                    BackgroundTransparency=1,LayoutOrder=elemCount,
-                },grid)
-                -- We must tell the grid to give this cell full width
-                -- trick: use a UIGridLayout + sibling spacer then absolutely size
-                gridLayout.CellSize=gridLayout.CellSize -- keep
-                -- Actually: reparent to card directly for full-width elements
-                c.Parent=nil
-                c=ni("Frame",{
-                    Size=UDim2.new(1,0,0,customH or 34),
+                -- cell takes exactly half width minus half the gap
+                local cell = ni("Frame",{
+                    Size=UDim2.new(0.5,-(GAP/2),1,0),
                     BackgroundTransparency=1,
-                },card)
-                return c
+                    LayoutOrder=currentPairCount,
+                },currentPairRow)
+                currentPairCount = currentPairCount + 1
+                if currentPairCount >= 2 then closePairRow() end
+                return cell
             end
 
-            -- Shared row element
+            local function makeFullCell(h)
+                closePairRow()
+                local cell = ni("Frame",{
+                    Size=UDim2.new(1,0,0,h or CELL_H),
+                    BackgroundTransparency=1,
+                },rowsFrame)
+                closePairRow()
+                return cell
+            end
+
             local function makeRow(parent)
                 local el=ni("Frame",{
                     Size=UDim2.new(1,0,1,0),
