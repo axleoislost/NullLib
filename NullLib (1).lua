@@ -248,16 +248,14 @@ function NullLib:CreateWindow(cfg)
     },topbar)
 
     local closeBtn=ni("TextButton",{Size=UDim2.new(0,26,0,26),Position=UDim2.new(1,-36,0.5,-13),
-        BackgroundColor3=C.Red,Text="",BorderSizePixel=0,ZIndex=6},topbar)
+        BackgroundColor3=C.Red,Text="✕",TextColor3=C.White,Font=Enum.Font.GothamBold,TextSize=11,
+        BorderSizePixel=0,ZIndex=6},topbar)
     corner(closeBtn,6)
-    ni("TextLabel",{Size=UDim2.new(1,0,1,0),BackgroundTransparency=1,
-        Text="✕",TextColor3=C.White,Font=Enum.Font.GothamBold,TextSize=11,ZIndex=7},closeBtn)
 
     local minBtn=ni("TextButton",{Size=UDim2.new(0,26,0,26),Position=UDim2.new(1,-68,0.5,-13),
-        BackgroundColor3=C.Row2,Text="",BorderSizePixel=0,ZIndex=6},topbar)
+        BackgroundColor3=C.Row2,Text="–",TextColor3=C.TextSub,Font=Enum.Font.GothamBold,TextSize=13,
+        BorderSizePixel=0,ZIndex=6},topbar)
     corner(minBtn,6)
-    ni("TextLabel",{Size=UDim2.new(1,0,1,0),BackgroundTransparency=1,
-        Text="–",TextColor3=C.TextSub,Font=Enum.Font.GothamBold,TextSize=13,ZIndex=7},minBtn)
 
     makeDraggable(win,topbar)
 
@@ -689,7 +687,7 @@ function NullLib:CreateWindow(cfg)
                 rowLabel(el,config.Name or "Dropdown",0)
 
                 local selLbl=ni("TextLabel",{
-                    Size=UDim2.new(0.5,-10,1,0),Position=UDim2.new(0.5,0,0,0),
+                    Size=UDim2.new(1,-90,1,0),Position=UDim2.new(0,85,0,0),
                     BackgroundTransparency=1,Text=dispText(),TextColor3=C.AccentL,
                     Font=Enum.Font.Gotham,TextSize=11,
                     TextXAlignment=Enum.TextXAlignment.Right,
@@ -697,9 +695,9 @@ function NullLib:CreateWindow(cfg)
                 },el)
 
                 local chev=ni("TextLabel",{
-                    Size=UDim2.new(0,18,1,0),Position=UDim2.new(1,-22,0,0),
+                    Size=UDim2.new(0,20,1,0),Position=UDim2.new(1,-24,0,0),
                     BackgroundTransparency=1,Text="▾",TextColor3=C.TextSub,
-                    Font=Enum.Font.GothamBold,TextSize=11,ZIndex=2,
+                    Font=Enum.Font.GothamBold,TextSize=12,ZIndex=2,
                 },el)
 
                 -- OVERLAY panel
@@ -1105,4 +1103,4 @@ function NullLib:CreateWindow(cfg)
     return Win
 end
 
-return NullLib
+return NullLib --
