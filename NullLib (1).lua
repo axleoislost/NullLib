@@ -565,7 +565,8 @@ function NullLib:CreateWindow(config)
             for _, t in pairs(Window._tabs) do
                 t._page.Visible = false
                 tween(t._btn, {BackgroundTransparency = 1}, 0.15)
-                tween(t._textLabel, {TextColor3 = C.TextMuted, Font = Enum.Font.Gotham}, 0.15)
+                tween(t._textLabel, {TextColor3 = C.TextMuted}, 0.15)
+                t._textLabel.Font = Enum.Font.Gotham
                 tween(t._indicator, {BackgroundTransparency = 1}, 0.15)
                 if t._iconLabel then tween(t._iconLabel, {ImageColor3 = C.TextMuted}, 0.15) end
             end
@@ -573,9 +574,9 @@ function NullLib:CreateWindow(config)
             page.Visible = true
             tween(btn, {BackgroundTransparency = 0, BackgroundColor3 = C.Surface2}, 0.15)
             tween(textLabel, {TextColor3 = C.Text}, 0.15)
+            textLabel.Font = Enum.Font.GothamBold
             tween(indicator, {BackgroundTransparency = 0}, 0.15)
             if iconLabel then tween(iconLabel, {ImageColor3 = C.AccentLight}, 0.15) end
-            textLabel.Font = Enum.Font.GothamBold
             Window._activeTab = tab
         end
 
@@ -1565,3 +1566,5 @@ function NullLib:CreateWindow(config)
 end
 
 return NullLib
+
+-- n
